@@ -1,7 +1,9 @@
 {
     "require": {
         "psr/http-client": "^1.0",
-        "nyholm/psr7": "^1.0"
+        "nyholm/psr7": "^1.0",
+        "ext-curl": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.4",

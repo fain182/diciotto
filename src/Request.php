@@ -8,10 +8,10 @@ use Psr\Http\Message\UriInterface;
 
 class Request implements RequestInterface
 {
-    private $psrRequest;
+    protected $psrRequest;
 
-    public function __construct($uri) {
-        $this->psrRequest = new \Nyholm\Psr7\Request('GET', $uri);
+    public function __construct($uri, $method = 'GET', $body = null) {
+        $this->psrRequest = new \Nyholm\Psr7\Request($method, $uri, [], $body);
     }
 
     // proxy methods for \Nyholm\Psr7\Request

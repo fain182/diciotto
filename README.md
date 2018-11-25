@@ -20,16 +20,17 @@ Diciotto is a simple PSR-18 compliant HTTP client library for PHP 7.
     ?>
 ```
 
-## POST
+## POST TO JSON API
 
 ```php
     use Diciotto/HttpClient;
-    use Diciotto/JsonPostRequest;
+    use Diciotto/JsonRequest;
 
     $httpClient = new HttpClient();
-    $request = new JsonPostRequest('http://', ['ciao'=>1])
+    $dataToSend = ['abc' => 'def'];
+    $request = new JsonRequest('https://httpbin.org/put', 'POST', $dataToSend);
     try {
-      $response = $httpClient->sendRequest( $request );
+      $response = $httpClient->sendRequest($request);
     } catch (ClientExceptionInterface $e) {
 
     }
