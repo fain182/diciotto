@@ -10,10 +10,17 @@ use Psr\Http\Message\ResponseInterface;
 class HttpClient implements ClientInterface
 {
     private $timeoutInSeconds = 15;
+    private $checkSslCertificate = true;
 
     public function withTimeout(int $timeoutInSeconds) : self
     {
         $this->timeoutInSeconds = $timeoutInSeconds;
+        return $this;
+    }
+
+    public function withCheckSslCertificates(bool $checkSslCertificate) : self
+    {
+        $this->checkSslCertificate = $checkSslCertificate;
         return $this;
     }
 
@@ -31,6 +38,12 @@ class HttpClient implements ClientInterface
         $curl = CurlHandleFactory::build($request);
 
         curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeoutInSeconds);
+
+        if ($this->checkSslCertificate === false) {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        }
+
 
         $headerLines = [];
         curl_setopt(
@@ -95,5 +108,6 @@ class HttpClient implements ClientInterface
 
         return array_slice($headerLines, $lastHttpRequestStartAtIndex);
     }
+
 
 }
