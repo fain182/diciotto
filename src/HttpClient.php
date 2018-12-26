@@ -9,11 +9,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class HttpClient implements ClientInterface
 {
-    private $debugEnabled = false;
-
-    public function enableDebug(bool $debugEnabled) {
-        $this->debugEnabled = $debugEnabled;
-    }
 
     /**
      * Sends a PSR-7 request and returns a PSR-7 response.
@@ -26,93 +21,52 @@ class HttpClient implements ClientInterface
      */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
-        if ($this->debugEnabled) echo $request->getUri()."\n";
-        $curl = curl_init();
-        if ($this->debugEnabled) curl_setopt($curl, CURLINFO_HEADER_OUT, true);
+        $curl = CurlHandleFactory::build($request);
 
-        curl_setopt($curl,CURLOPT_URL, $request->getUri());
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-        $this->setupHttpMethodAndBody($request, $curl);
-
-        $this->setupRequestHeader($request, $curl);
-
-
-        list($headers, $version, $responseBody) = $this->executeRequest($curl);
-
-        if ($this->debugEnabled) echo curl_getinfo($curl, CURLINFO_HEADER_OUT);
-
-        if ($responseBody === false) {
-            throw new NetworkException(curl_error($curl), $request);
-        }
-        $statusCode = curl_getinfo($curl,CURLINFO_HTTP_CODE);
-        return new Response($statusCode, $headers, $responseBody, $version);
-    }
-
-    function startsWith($haystack, $needle) : bool
-    {
-        $length = strlen($needle);
-        return (substr($haystack, 0, $length) === $needle);
-    }
-
-    private function setupHttpMethodAndBody(RequestInterface $request, $curl): void
-    {
-        switch ($request->getMethod()) {
-            case 'POST':
-                curl_setopt($curl, CURLOPT_POST, 1);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getBody());
-                break;
-            case 'GET':
-                break;
-            case 'PUT':
-            case 'DELETE':
-                curl_setopt($curl, CURLOPT_POSTFIELDS, (string)$request->getBody());
-                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getMethod());
-                break;
-            default:
-                throw new RequestException('Method "'.$request->getMethod().'" is not valid.');
-        }
-    }
-
-    private function setupRequestHeader(RequestInterface $request, $curl): void
-    {
         $headerLines = [];
-        foreach ($request->getHeaders() as $headerName => $values) {
-            $headerLines[] = $headerName.": ".$request->getHeaderLine($headerName);
-        }
-        if ($this->debugEnabled) {
-            echo "HEADERS:";
-            var_dump($headerLines);
-        }
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headerLines);
-    }
-
-    private function executeRequest($curl): array
-    {
-        $headers = [];
-        $version = '';
         curl_setopt(
             $curl,
             CURLOPT_HEADERFUNCTION,
-            function ($curl, $header) use (&$headers, &$version) {
-                $len = strlen($header);
-
-                if ($this->startsWith($header, 'HTTP/')) {
-                    $version = substr($header, 5, 3);
-                } else {
-                    $header = explode(':', $header, 2);
-                    if (count($header) >= 2) {
-                        $headers[strtolower(trim($header[0]))] = trim($header[1]);
-                    }
-                }
-
+            function ($curl, $headerLine) use (&$headerLines) {
+                $len = strlen($headerLine);
+                $headerLines []= $headerLine;
                 return $len;
             }
         );
 
         $responseBody = curl_exec($curl);
+        if ($responseBody === false) {
+            throw new NetworkException(curl_error($curl), $request);
+        }
 
-        return array($headers, $version, $responseBody);
+        $version = $this->parseHttpVersion($headerLines);
+        $statusCode = $this->parseStatusCode($headerLines);
+        $headers = $this->parseHttpHeaders($headerLines);
+
+        return new Response($statusCode, $headers, $responseBody, $version);
     }
 
+    private function parseHttpVersion($headerLines): string {
+        preg_match('/http\/(.+) (\d+) /i', $headerLines[0], $matches);
+        return $matches[1];
+    }
+
+    private function parseStatusCode($headerLines): int {
+        preg_match('/http\/(.+) (\d+) /i', $headerLines[0], $matches);
+        return $matches[2];
+    }
+
+    private function parseHttpHeaders($headerLines): array {
+        array_shift($headerLines);
+
+        $headers = [];
+        foreach ($headerLines as $header) {
+            $header = explode(':', $header, 2);
+            if (count($header) >= 2) {
+                $headers[strtolower(trim($header[0]))] = trim($header[1]);
+            }
+        }
+
+        return $headers;
+    }
 }
