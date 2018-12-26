@@ -61,4 +61,14 @@ class HttpClientTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($dataToSend, $dataSent);
     }
 
+    public function testItFollowsRedirect() : void {
+        $client = new HttpClient();
+        $request = new Request('http://httpbin.org/redirect-to?url=http%3A%2F%2Fwww.google.it%2Frobots.txt&status_code=301');
+
+        $response = $client->sendRequest($request);
+
+        $this->assertStringStartsWith('User-agent:', (string) $response->getBody());
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
 }

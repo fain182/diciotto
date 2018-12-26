@@ -14,6 +14,7 @@ class CurlHandleFactory
 
         curl_setopt($curl,CURLOPT_URL, $request->getUri());
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
         switch ($request->getMethod()) {
             case 'GET':

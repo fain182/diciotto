@@ -47,7 +47,9 @@ class HttpClient implements ClientInterface
         if ($responseBody === false) {
             throw new NetworkException(curl_error($curl), $request);
         }
+        curl_close($curl);
 
+        $headerLines = $this->discardRedirectsHeaders($headerLines);
         $version = $this->parseHttpVersion($headerLines);
         $statusCode = $this->parseStatusCode($headerLines);
         $headers = $this->parseHttpHeaders($headerLines);
@@ -77,6 +79,21 @@ class HttpClient implements ClientInterface
         }
 
         return $headers;
+    }
+
+    /*
+     * When curl follow redirects give us the headers of all the request instead of only the last one,
+     * so we need to select the headers only for the last request.
+     */
+    private function discardRedirectsHeaders($headerLines): array {
+        $lastHttpRequestStartAtIndex = 0;
+        for ($i = 0; $i < count($headerLines); $i++) {
+            if (preg_match('/http\/(.+) (\d+) /i', $headerLines[$i], $matches)) {
+                $lastHttpRequestStartAtIndex = $i;
+            }
+        }
+
+        return array_slice($headerLines, $lastHttpRequestStartAtIndex);
     }
 
 }
