@@ -27,7 +27,7 @@ class Request implements RequestInterface
     public function getHeaderLine($header) : string
     {
         $separator = ',';
-        if (strtolower($header) == 'cookie') {
+        if (strtolower($header) === 'cookie') {
             $separator = ';';
         }
         return \implode($separator.' ', $this->getHeader($header));

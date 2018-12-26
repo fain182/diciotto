@@ -16,11 +16,11 @@ class CurlHandleFactory
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         switch ($request->getMethod()) {
+            case 'GET':
+                break;
             case 'POST':
                 curl_setopt($curl, CURLOPT_POST, 1);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getBody());
-                break;
-            case 'GET':
                 break;
             case 'PUT':
             case 'DELETE':
@@ -28,7 +28,7 @@ class CurlHandleFactory
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getMethod());
                 break;
             default:
-                throw new RequestException('Method "'.$request->getMethod().'" is not valid.', $request);
+                throw new RequestException("Unknown HTTP method: '{$request->getMethod()}'", $request);
         }
 
         $headerLines = [];
