@@ -14,7 +14,28 @@ class Request implements RequestInterface
         $this->psrRequest = new \Nyholm\Psr7\Request($method, $uri, [], $body);
     }
 
-    // proxy methods for \Nyholm\Psr7\Request
+    public function withCookie(string $name, string $value) : self
+    {
+        return $this->withHeader("Cookie", "$name=$value");
+    }
+
+    public function withAddedCookie(string $name, string $value) : self
+    {
+        return $this->withAddedHeader("Cookie", "$name=$value");
+    }
+
+    public function getHeaderLine($header) : string
+    {
+        $separator = ',';
+        if (strtolower($header) == 'cookie') {
+            $separator = ';';
+        }
+        return \implode($separator.' ', $this->getHeader($header));
+    }
+
+    /*
+     * From here there are only proxy methods for \Nyholm\Psr7\Request
+     */
 
     public function getProtocolVersion() : string
     {
@@ -41,11 +62,6 @@ class Request implements RequestInterface
     public function getHeader($name) : array
     {
         return $this->psrRequest->getHeader($name);
-    }
-
-    public function getHeaderLine($name) : string
-    {
-        return $this->psrRequest->getHeaderLine($name);
     }
 
     public function withHeader($name, $value) : self
@@ -116,4 +132,5 @@ class Request implements RequestInterface
         $new->psrRequest = $this->psrRequest->withUri($uri, $preserveHost);
         return $new;
     }
+
 }
