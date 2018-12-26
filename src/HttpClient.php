@@ -9,6 +9,13 @@ use Psr\Http\Message\ResponseInterface;
 
 class HttpClient implements ClientInterface
 {
+    private $timeoutInSeconds = 15;
+
+    public function withTimeout(int $timeoutInSeconds) : self
+    {
+        $this->timeoutInSeconds = $timeoutInSeconds;
+        return $this;
+    }
 
     /**
      * Sends a PSR-7 request and returns a PSR-7 response.
@@ -22,6 +29,8 @@ class HttpClient implements ClientInterface
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $curl = CurlHandleFactory::build($request);
+
+        curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeoutInSeconds);
 
         $headerLines = [];
         curl_setopt(
@@ -69,4 +78,5 @@ class HttpClient implements ClientInterface
 
         return $headers;
     }
+
 }
