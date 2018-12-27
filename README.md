@@ -53,3 +53,17 @@ The default timeout is 15 seconds.
 ## Error handling
 Diciotto raise exception if the request is invalid (`RequestException`), or if there are network problems (`NetworkException`). 
 Response with status code 4xx or 5xx are treated the same way as the others, so no exception or error is raised.
+
+## About
+
+### Requirements
+
+- Diciotto works with PHP 7.1 or above.
+
+### License
+
+Diciotto is licensed under the MIT License - see the `LICENSE` file for details
+
+### Acknowledgements
+
+Diciotto is built on top of [nyholm/psr7](https://github.com/Nyholm/psr7) that provides PSR-7 and PSR-17 implementation.
