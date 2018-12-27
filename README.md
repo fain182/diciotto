@@ -1,5 +1,7 @@
 # Diciotto
 
+[![Latest Stable Version](https://poser.pugx.org/fain182/diciotto/v/stable)](https://packagist.org/packages/fain182/diciotto) [![Build Status](https://travis-ci.org/fain182/diciotto.svg?branch=master)](https://travis-ci.org/fain182/diciotto)
+
 Diciotto is a simple PSR-18 compliant HTTP client library for PHP 7.
 
 # Usage
