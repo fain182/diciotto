@@ -12,7 +12,7 @@ class HttpClientSslTest extends \PHPUnit\Framework\TestCase
 
     public function testSelfSignedCertificate() : void {
         $this->expectException(NetworkExceptionInterface::class);
-        $this->expectExceptionMessage("SSL certificate problem: self signed certificate");
+        $this->expectExceptionMessageRegExp("/.*certificat.*/");
 
         $client = (new HttpClient());
         $request = new Request('https://self-signed.badssl.com/');

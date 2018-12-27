@@ -12,14 +12,14 @@ class HttpClientTest extends \PHPUnit\Framework\TestCase
 
     public function testGet() : void {
         $client = new HttpClient();
-        $request = new Request('https://www.google.com/robots.txt');
+        $request = new Request('https://ideato.it/robots.txt');
 
         $response = $client->sendRequest($request);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertStringStartsWith('User-agent:', (string) $response->getBody());
         $this->assertEquals(2, $response->getProtocolVersion());
-        $this->assertEquals(['text/plain'], $response->getHeader('content-type'));
+        $this->assertEquals(['text/plain; charset=utf-8'], $response->getHeader('content-type'));
     }
 
     public function testCookie() : void {
