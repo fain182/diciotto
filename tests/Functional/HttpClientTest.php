@@ -18,7 +18,7 @@ class HttpClientTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertStringStartsWith('User-agent:', (string) $response->getBody());
-        $this->assertEquals(2, $response->getProtocolVersion());
+        $this->assertContains($response->getProtocolVersion(), ['1.1', '2']);
         $this->assertEquals(['text/plain; charset=utf-8'], $response->getHeader('content-type'));
     }
 
