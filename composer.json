@@ -1,24 +1,33 @@
 {
-    "require": {
-        "psr/http-client": "^1.0",
-        "nyholm/psr7": "^1.0",
-        "ext-curl": "*",
-        "ext-json": "*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^7.4",
-        "roave/security-advisories": "dev-master"
-    },
-    "scripts": {
-        "test": "phpunit tests"
-    },
-    "config": {
-        "bin-dir": "bin"
-    },
-    "autoload": {
-        "psr-4": {
-            "Diciotto\\": "src",
-            "Tests\\Diciotto\\": "tests"
-        }
+  "name": "fain182/diciotto",
+  "description": "A no-nonsense PHP Http client (PSR 18 compatible)",
+  "authors": [
+    {
+      "name": "Pietro Campagnano",
+      "email": "fain182@gmail.com"
     }
+  ],
+  "require": {
+    "php": ">=7.1.0",
+    "psr/http-client": "^1.0",
+    "nyholm/psr7": "^1.0",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.4",
+    "roave/security-advisories": "dev-master"
+  },
+  "scripts": {
+    "test": "phpunit tests"
+  },
+  "config": {
+    "bin-dir": "bin"
+  },
+  "autoload": {
+    "psr-4": {
+      "Diciotto\\": "src",
+      "Tests\\Diciotto\\": "tests"
+    }
+  }
 }
