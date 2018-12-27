@@ -5,6 +5,14 @@
 
 Diciotto is a no-nonsense PSR-18 compliant HTTP client library for PHP 7.
 
+## Principles
+
+  - Documentation should be unnecessary
+  - Provide sensible defaults
+  - Explicit is better than implicit
+  - Prefer a good Developer eXperience over performance
+  - No surprises
+
 ## Install
 ```
     composer require fain182/diciotto
