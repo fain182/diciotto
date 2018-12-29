@@ -4,9 +4,14 @@
   "authors": [
     {
       "name": "Pietro Campagnano",
-      "email": "fain182@gmail.com"
+      "email": "fain182@gmail.com",
+      "homepage": "https://fain182.blog"
     }
   ],
+  "license": "MIT",
+  "provide": {
+    "psr/http-client-implementation": "^1.0"
+  },
   "require": {
     "php": ">=7.1.0",
     "psr/http-client": "^1.0",
