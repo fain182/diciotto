@@ -21,7 +21,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^7.4",
-    "roave/security-advisories": "dev-master"
+    "roave/security-advisories": "dev-master",
+    "php-coveralls/php-coveralls": "^2.1"
   },
   "config": {
     "bin-dir": "bin"
