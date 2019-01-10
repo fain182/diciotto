@@ -1,18 +1,16 @@
 <?php
 
-
 namespace Diciotto;
-
 
 use Psr\Http\Message\RequestInterface;
 
 class CurlHandleFactory
 {
-
-    public static function build(RequestInterface $request) {
+    public static function build(RequestInterface $request)
+    {
         $curl = curl_init();
 
-        curl_setopt($curl,CURLOPT_URL, $request->getUri());
+        curl_setopt($curl, CURLOPT_URL, $request->getUri());
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
@@ -25,7 +23,7 @@ class CurlHandleFactory
                 break;
             case 'PUT':
             case 'DELETE':
-                curl_setopt($curl, CURLOPT_POSTFIELDS, (string)$request->getBody());
+                curl_setopt($curl, CURLOPT_POSTFIELDS, (string) $request->getBody());
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getMethod());
                 break;
             default:
@@ -34,7 +32,7 @@ class CurlHandleFactory
 
         $headerLines = [];
         foreach ($request->getHeaders() as $headerName => $values) {
-            $headerLines[] = $headerName.": ".$request->getHeaderLine($headerName);
+            $headerLines[] = $headerName.': '.$request->getHeaderLine($headerName);
         }
 
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headerLines);

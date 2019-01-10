@@ -10,26 +10,28 @@ class Request implements RequestInterface
 {
     protected $psrRequest;
 
-    public function __construct($uri, $method = 'GET', $body = null) {
+    public function __construct($uri, $method = 'GET', $body = null)
+    {
         $this->psrRequest = new \Nyholm\Psr7\Request($method, $uri, [], $body);
     }
 
-    public function withCookie(string $name, string $value) : self
+    public function withCookie(string $name, string $value): self
     {
-        return $this->withHeader("Cookie", "$name=$value");
+        return $this->withHeader('Cookie', "$name=$value");
     }
 
-    public function withAddedCookie(string $name, string $value) : self
+    public function withAddedCookie(string $name, string $value): self
     {
-        return $this->withAddedHeader("Cookie", "$name=$value");
+        return $this->withAddedHeader('Cookie', "$name=$value");
     }
 
-    public function getHeaderLine($header) : string
+    public function getHeaderLine($header): string
     {
         $separator = ',';
-        if (strtolower($header) === 'cookie') {
+        if ('cookie' === strtolower($header)) {
             $separator = ';';
         }
+
         return \implode($separator.' ', $this->getHeader($header));
     }
 
@@ -37,44 +39,47 @@ class Request implements RequestInterface
      * From here there are only proxy methods for \Nyholm\Psr7\Request
      */
 
-    public function getProtocolVersion() : string
+    public function getProtocolVersion(): string
     {
         return $this->psrRequest->getProtocolVersion();
     }
 
-    public function withProtocolVersion($version) : self
+    public function withProtocolVersion($version): self
     {
         $new = clone $this;
         $new->psrRequest = $this->psrRequest->withProtocolVersion($version);
+
         return $new;
     }
 
-    public function getHeaders() : array
+    public function getHeaders(): array
     {
         return $this->psrRequest->getHeaders();
     }
 
-    public function hasHeader($name) : bool
+    public function hasHeader($name): bool
     {
         return $this->psrRequest->hasHeader($name);
     }
 
-    public function getHeader($name) : array
+    public function getHeader($name): array
     {
         return $this->psrRequest->getHeader($name);
     }
 
-    public function withHeader($name, $value) : self
+    public function withHeader($name, $value): self
     {
         $new = clone $this;
         $new->psrRequest = $this->psrRequest->withHeader($name, $value);
+
         return $new;
     }
 
-    public function withAddedHeader($name, $value) : self
+    public function withAddedHeader($name, $value): self
     {
         $new = clone $this;
         $new->psrRequest = $this->psrRequest->withAddedHeader($name, $value);
+
         return $new;
     }
 
@@ -82,10 +87,11 @@ class Request implements RequestInterface
     {
         $new = clone $this;
         $new->psrRequest = $this->psrRequest->withoutHeader($name);
+
         return $new;
     }
 
-    public function getBody() : StreamInterface
+    public function getBody(): StreamInterface
     {
         return $this->psrRequest->getBody();
     }
@@ -94,10 +100,11 @@ class Request implements RequestInterface
     {
         $new = clone $this;
         $new->psrRequest = $this->psrRequest->withBody($body);
+
         return $new;
     }
 
-    public function getRequestTarget() : string
+    public function getRequestTarget(): string
     {
         return $this->psrRequest->getRequestTarget();
     }
@@ -106,22 +113,24 @@ class Request implements RequestInterface
     {
         $new = clone $this;
         $new->psrRequest = $this->psrRequest->withRequestTarget($requestTarget);
+
         return $new;
     }
 
-    public function getMethod() : string
+    public function getMethod(): string
     {
         return $this->psrRequest->getMethod();
     }
 
-    public function withMethod($method) : self
+    public function withMethod($method): self
     {
         $new = clone $this;
         $new->psrRequest = $this->psrRequest->withMethod($method);
+
         return $new;
     }
 
-    public function getUri() : UriInterface
+    public function getUri(): UriInterface
     {
         return $this->psrRequest->getUri();
     }
@@ -130,7 +139,7 @@ class Request implements RequestInterface
     {
         $new = clone $this;
         $new->psrRequest = $this->psrRequest->withUri($uri, $preserveHost);
+
         return $new;
     }
-
 }

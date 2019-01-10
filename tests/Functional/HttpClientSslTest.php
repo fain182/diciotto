@@ -6,13 +6,12 @@ use Diciotto\HttpClient;
 use Diciotto\Request;
 use Psr\Http\Client\NetworkExceptionInterface;
 
-
 class HttpClientSslTest extends \PHPUnit\Framework\TestCase
 {
-
-    public function testSelfSignedCertificate() : void {
+    public function testSelfSignedCertificate(): void
+    {
         $this->expectException(NetworkExceptionInterface::class);
-        $this->expectExceptionMessageRegExp("/.*certificat.*/");
+        $this->expectExceptionMessageRegExp('/.*certificat.*/');
 
         $client = (new HttpClient());
         $request = new Request('https://self-signed.badssl.com/');
@@ -20,12 +19,12 @@ class HttpClientSslTest extends \PHPUnit\Framework\TestCase
         $client->sendRequest($request);
     }
 
-    public function testIgnoreCertificateErrors() : void {
+    public function testIgnoreCertificateErrors(): void
+    {
         $client = (new HttpClient())->withCheckSslCertificates(false);
         $request = new Request('https://self-signed.badssl.com/');
 
         $response = $client->sendRequest($request);
         $this->assertEquals(200, $response->getStatusCode());
     }
-
 }

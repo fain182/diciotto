@@ -1,11 +1,9 @@
 <?php
 
-
 namespace Diciotto;
 
 use Psr\Http\Client\NetworkExceptionInterface;
 use Psr\Http\Message\RequestInterface;
-use Throwable;
 
 class NetworkException extends \RuntimeException implements NetworkExceptionInterface
 {

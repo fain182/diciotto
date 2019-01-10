@@ -12,15 +12,17 @@ class HttpClient implements ClientInterface
     private $timeoutInSeconds = 15;
     private $checkSslCertificate = true;
 
-    public function withTimeout(int $timeoutInSeconds) : self
+    public function withTimeout(int $timeoutInSeconds): self
     {
         $this->timeoutInSeconds = $timeoutInSeconds;
+
         return $this;
     }
 
-    public function withCheckSslCertificates(bool $checkSslCertificate) : self
+    public function withCheckSslCertificates(bool $checkSslCertificate): self
     {
         $this->checkSslCertificate = $checkSslCertificate;
+
         return $this;
     }
 
@@ -31,7 +33,7 @@ class HttpClient implements ClientInterface
      *
      * @return ResponseInterface
      *
-     * @throws \Psr\Http\Client\ClientExceptionInterface If an error happens while processing the request.
+     * @throws \Psr\Http\Client\ClientExceptionInterface if an error happens while processing the request
      */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
@@ -39,11 +41,10 @@ class HttpClient implements ClientInterface
 
         curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeoutInSeconds);
 
-        if ($this->checkSslCertificate === false) {
+        if (false === $this->checkSslCertificate) {
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         }
-
 
         $headerLines = [];
         curl_setopt(
@@ -51,13 +52,14 @@ class HttpClient implements ClientInterface
             CURLOPT_HEADERFUNCTION,
             function ($curl, $headerLine) use (&$headerLines) {
                 $len = strlen($headerLine);
-                $headerLines []= $headerLine;
+                $headerLines[] = $headerLine;
+
                 return $len;
             }
         );
 
         $responseBody = curl_exec($curl);
-        if ($responseBody === false) {
+        if (false === $responseBody) {
             throw new NetworkException(curl_error($curl), $request);
         }
         curl_close($curl);
@@ -70,17 +72,22 @@ class HttpClient implements ClientInterface
         return new Response($statusCode, $headers, $responseBody, $version);
     }
 
-    private function parseHttpVersion($headerLines): string {
+    private function parseHttpVersion($headerLines): string
+    {
         preg_match('/http\/(.+) (\d+) /i', $headerLines[0], $matches);
+
         return $matches[1];
     }
 
-    private function parseStatusCode($headerLines): int {
+    private function parseStatusCode($headerLines): int
+    {
         preg_match('/http\/(.+) (\d+) /i', $headerLines[0], $matches);
+
         return $matches[2];
     }
 
-    private function parseHttpHeaders($headerLines): array {
+    private function parseHttpHeaders($headerLines): array
+    {
         array_shift($headerLines);
 
         $headers = [];
@@ -98,9 +105,10 @@ class HttpClient implements ClientInterface
      * When curl follow redirects give us the headers of all the request instead of only the last one,
      * so we need to select the headers only for the last request.
      */
-    private function discardRedirectsHeaders($headerLines): array {
+    private function discardRedirectsHeaders($headerLines): array
+    {
         $lastHttpRequestStartAtIndex = 0;
-        for ($i = 0; $i < count($headerLines); $i++) {
+        for ($i = 0; $i < count($headerLines); ++$i) {
             if (preg_match('/http\/(.+) (\d+) /i', $headerLines[$i], $matches)) {
                 $lastHttpRequestStartAtIndex = $i;
             }
@@ -108,6 +116,4 @@ class HttpClient implements ClientInterface
 
         return array_slice($headerLines, $lastHttpRequestStartAtIndex);
     }
-
-
 }

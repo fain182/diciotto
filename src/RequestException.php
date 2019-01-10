@@ -1,15 +1,12 @@
 <?php
 
-
 namespace Diciotto;
-
 
 use Psr\Http\Client\RequestExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 
 class RequestException extends \RuntimeException implements RequestExceptionInterface
 {
-
     private $request;
 
     public function __construct(string $message, RequestInterface $request)
@@ -29,5 +26,4 @@ class RequestException extends \RuntimeException implements RequestExceptionInte
     {
         return $this->request;
     }
-
 }
