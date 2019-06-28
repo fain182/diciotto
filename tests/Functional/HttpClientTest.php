@@ -21,6 +21,18 @@ class HttpClientTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['text/plain; charset=utf-8'], $response->getHeader('content-type'));
     }
 
+    public function testPostSendFormData()
+    {
+        $client = new HttpClient();
+        $dataToSend = ['abc' => 'def'];
+        $request = new Request('https://httpbin.org/post', 'POST', http_build_query($dataToSend));
+        $response = $client->sendRequest($request);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getBody(), true);
+        $this->assertEquals($dataToSend, $body);
+    }
+
     public function testCookie(): void
     {
         $client = new HttpClient();
