@@ -30,7 +30,7 @@ class HttpClientTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(), true);
-        $this->assertEquals($dataToSend, $body);
+        $this->assertEquals($dataToSend, $body['form']);
     }
 
     public function testCookie(): void
