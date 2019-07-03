@@ -19,7 +19,7 @@ class CurlHandleFactory
                 break;
             case 'POST':
                 curl_setopt($curl, CURLOPT_POST, 1);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getBody());
+                curl_setopt($curl, CURLOPT_POSTFIELDS, (string) $request->getBody());
                 break;
             case 'PUT':
             case 'DELETE':
